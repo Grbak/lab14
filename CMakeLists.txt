@@ -8,13 +8,16 @@ HunterGate(
     SHA1 "a0d1e333acb270b96cad7419e286471b568d968f"
 )
 
-project(main)
-hunter_add_package(CURL)
-find_package(CURL CONFIG REQUIRED)
-hunter_add_package(OpenSSL)
-find_package(OpenSSL REQUIRED)
+project(builder)
 
-add_executable(main ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
-target_link_libraries(main PRIVATE CURL::libcurl OpenSSL::SSL OpenSSL::Crypto)
+hunter_add_package(Boost COMPONENTS filesystem system program_options)
+hunter_add_package(BoostProcess)
 
-install(TARGETS main RUNTIME DESTINATION bin)
+find_package(Boost COMPONENTS filesystem system program_options REQUIRED)
+find_package(BoostProcess CONFIG REQUIRED)
+
+add_executable(builder ${CMAKE_CURRENT_SOURCE_DIR}/builder.cpp)
+
+target_link_libraries(builder Boost::filesystem Boost::system BoostProcess::boost_process Boost::program_options)
+
+install(TARGETS builder RUNTIME DESTINATION bin)
